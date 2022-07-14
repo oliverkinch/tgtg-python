@@ -2,12 +2,7 @@ import time
 import random
 import argparse
 from datetime import datetime
-from constants import (
-    SHORT_SLEEP_LOWER,
-    SHORT_SLEEP_UPPER,
-    LONG_SLEEP_LOWER,
-    LONG_SLEEP_UPPER,
-)
+from constants import SLEEP_LOWER, SLEEP_UPPER
 
 from utils import send_push_notification, get_client, send_mail_notification
 
@@ -39,22 +34,16 @@ class Service:
                         send_push_notification(message=item["display_name"])
                     if self.mail_notification:
                         send_mail_notification(subject=item["display_name"])
-                self.short_sleep()
+                self._sleep()
 
     def run(self):
         while True:
             self.get_time()
             self.check_items()
-            self.long_sleep()
 
     @staticmethod
-    def short_sleep():
-        sleep_duration = random.randint(SHORT_SLEEP_LOWER, SHORT_SLEEP_UPPER)
-        time.sleep(sleep_duration)
-
-    @staticmethod
-    def long_sleep():
-        sleep_duration = random.randint(LONG_SLEEP_LOWER, LONG_SLEEP_UPPER)
+    def _sleep():
+        sleep_duration = random.randint(SLEEP_LOWER, SLEEP_UPPER)
         time.sleep(sleep_duration)
 
     @staticmethod
