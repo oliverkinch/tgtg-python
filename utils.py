@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 import re
 from pushbullet import PushBullet
+import time
+
 
 load_dotenv()
 
@@ -66,6 +68,11 @@ def get_client():
         access_token=access_token, refresh_token=refresh_token, user_id=user_id
     )
 
+def time_since(start_time):
+    """
+    Return time since start_time
+    """
+    return time.time() - start_time
 
 def send_push_notification(message):
     """
@@ -78,7 +85,7 @@ def send_push_notification(message):
 
 
 if __name__ == "__main__":
-    # items = print_ids_of_favorite_items()
+    items = print_ids_of_favorite_items()
     # send_notification_mail(subject='Hello', text='World')
     # get_client()
     # print_credentials(email="oliver.kinch@gmail.com")
