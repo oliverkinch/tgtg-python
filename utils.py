@@ -5,6 +5,8 @@ import os
 import re
 from pushbullet import PushBullet
 import time
+import json
+
 
 
 load_dotenv()
@@ -20,17 +22,32 @@ def print_credentials(email="tgtghaps@gmail.com"):
     print(credentials)
 
 
-def print_ids_of_favorite_items():
+def favorite_items_to_json():
     """
     Print names and ids of favorite items
     """
+    favorite_items = {}
     client = get_client()
     items = client.get_items(page_size=100, favorites_only=True)
     for item in items:
         item_name = item["display_name"]
         item_id = item["item"]["item_id"]
-        print(f"{item_name:<75} {item_id}")
-    return items
+        favorite_items[item_id] = item_name
+
+    save_json(favorite_items, "favorite_items.json")
+
+
+def save_json(data, path):
+    with open(path, 'w') as f:
+        json.dump(data, f)
+
+
+def load_json(path):
+    """
+    Load json file
+    """
+    with open(path, 'r') as f:
+        return json.load(f)
 
 
 def send_mail_notification(subject="", text=""):
@@ -85,8 +102,8 @@ def send_push_notification(message):
 
 
 if __name__ == "__main__":
-    items = print_ids_of_favorite_items()
+    items = favorite_items_to_json()
     # send_notification_mail(subject='Hello', text='World')
     # get_client()
-    # print_credentials(email="oliver.kinch@gmail.com")
+    # print_credentials(email="tgtghaps@gmail.com")
     pass

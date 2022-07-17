@@ -4,29 +4,24 @@ import argparse
 from datetime import datetime
 from constants import SLEEP_LOWER, SLEEP_UPPER, ONE_HOUR
 
-from utils import send_push_notification, get_client, send_mail_notification, time_since
+from utils import send_push_notification, get_client, send_mail_notification, time_since, load_json
 
 
 class Service:
-    def __init__(self, push_notification=True, mail_notification=False):
+    def __init__(self, items_to_track, push_notification=True, mail_notification=False):
         self.push_notification = push_notification
         self.mail_notification = mail_notification
 
         self.client = get_client()
         self.start_time = time.time()
-        # list of tuples with (name, id)
-        self.items_of_interest = [
-            ("Gorillas", 477157),
-            # ("Coop365 - Kbh S Njalsgade (Frugt & Grønt)", 284731),
-            # ("SuperBrugsen - Christianshavns Torv, København K (Frugt & Grønt)", 3321),
-            # ("Irma  - Torvegade, København K (Dagligvarer)", 2849),
-        ]
+        self.items_to_track = items_to_track
+        self.print_items_that_service_tracks()
 
     def check_items(self):
-        for _, item_id in self.items_of_interest:
+        for item_id in self.items_to_track:
             item = self.client.get_item(item_id=item_id)
             if item["items_available"]:
-                self._send_notification(item)
+                self.send_notification(item)
             self._sleep()
 
     def run(self):
@@ -40,11 +35,17 @@ class Service:
     def restart_client(self):
         self.client = get_client()
 
-    def _send_notification(self, item):
+    def send_notification(self, item):
         if self.push_notification:
             send_push_notification(message=item["display_name"])
         if self.mail_notification:
             send_mail_notification(subject=item["display_name"])
+
+    def print_items_that_service_tracks(self):
+        favorite_items = load_json("favorite_items.json")
+        print("Service tracking:")
+        for item_id in self.items_to_track:
+            print(f"\t{favorite_items[str(item_id)]}")
 
     @staticmethod
     def _sleep():
@@ -65,7 +66,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--push-notification", type=int, default=1)
     parser.add_argument("-m", "--mail-notification", type=int, default=0)
+    # parser.add_argument('-l','--list', action='append', type=str, help='list of items ids (separated by a space)', default=[])
+    parser.add_argument('-l','--list', nargs='+', help='list of items ids (separated by a space)', type=int, default=[477157])
     args = parser.parse_args()
 
-    service = Service()
+    push_notification = args.push_notification
+    mail_notification = args.mail_notification
+    items_to_track = args.list
+
+    service = Service(items_to_track, push_notification, mail_notification)
     service.run()
