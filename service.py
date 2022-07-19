@@ -2,7 +2,7 @@ import time
 import random
 import argparse
 from datetime import datetime
-from constants import SLEEP_LOWER, SLEEP_UPPER, ONE_HOUR
+from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS
 
 from utils import send_push_notification, get_client, send_mail_notification, time_since, load_json
 
@@ -28,7 +28,7 @@ class Service:
         while True:
             self.get_time()
             self.check_items()
-            if time_since(self.start_time) > ONE_HOUR:
+            if time_since(self.start_time) > TWO_HOURS:
                 self.restart_client()
                 self.start_time = time.time()
 
