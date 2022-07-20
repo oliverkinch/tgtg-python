@@ -8,7 +8,6 @@ import time
 import json
 
 
-
 load_dotenv()
 
 
@@ -38,7 +37,7 @@ def favorite_items_to_json():
 
 
 def save_json(data, path):
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         json.dump(data, f)
 
 
@@ -46,7 +45,7 @@ def load_json(path):
     """
     Load json file
     """
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         return json.load(f)
 
 
@@ -85,11 +84,13 @@ def get_client():
         access_token=access_token, refresh_token=refresh_token, user_id=user_id
     )
 
+
 def time_since(start_time):
     """
     Return time since start_time
     """
     return time.time() - start_time
+
 
 def send_push_notification(message):
     """

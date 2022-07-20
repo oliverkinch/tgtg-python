@@ -4,7 +4,13 @@ import argparse
 from datetime import datetime
 from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS
 
-from utils import send_push_notification, get_client, send_mail_notification, time_since, load_json
+from utils import (
+    send_push_notification,
+    get_client,
+    send_mail_notification,
+    time_since,
+    load_json,
+)
 
 
 class Service:
@@ -56,9 +62,6 @@ class Service:
     def get_time():
         time_now = datetime.now().strftime("%H:%M:%S")
         print(f"Service running: {time_now}")
-    
-
-
 
 
 if __name__ == "__main__":
@@ -67,7 +70,14 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--push-notification", type=int, default=1)
     parser.add_argument("-m", "--mail-notification", type=int, default=0)
     # parser.add_argument('-l','--list', action='append', type=str, help='list of items ids (separated by a space)', default=[])
-    parser.add_argument('-l','--list', nargs='+', help='list of items ids (separated by a space)', type=int, default=[477157])
+    parser.add_argument(
+        "-l",
+        "--list",
+        nargs="+",
+        help="list of items ids (separated by a space)",
+        type=int,
+        default=[477157],
+    )
     args = parser.parse_args()
 
     push_notification = args.push_notification
