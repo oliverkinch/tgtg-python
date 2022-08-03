@@ -83,6 +83,8 @@ if __name__ == "__main__":
     push_notification = args.push_notification
     mail_notification = args.mail_notification
     items_to_track = args.list
-
+    n = len(items_to_track)
+    SLEEP_LOWER /= n
+    SLEEP_UPPER /= n
     service = Service(items_to_track, push_notification, mail_notification)
     service.run()
