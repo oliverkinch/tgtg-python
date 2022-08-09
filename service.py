@@ -23,13 +23,6 @@ class Service:
         self.items_to_track = items_to_track
         self.print_items_that_service_tracks()
 
-    def check_items(self):
-        for item_id in self.items_to_track:
-            item = self.client.get_item(item_id=item_id)
-            if item["items_available"]:
-                self.send_notification(item)
-            self._sleep()
-
     def run(self):
         while True:
             self.get_time()
@@ -37,6 +30,14 @@ class Service:
             if time_since(self.start_time) > TWO_HOURS:
                 self.restart_client()
                 self.start_time = time.time()
+
+    def check_items(self):
+        for item_id in self.items_to_track:
+            item = self.client.get_item(item_id=item_id)
+            if item["items_available"]:
+                print(f"\n\t{item['display_name']} is available\n")
+                self.send_notification(item)
+            self._sleep()
 
     def restart_client(self):
         self.client = get_client()
@@ -61,7 +62,7 @@ class Service:
     @staticmethod
     def get_time():
         time_now = datetime.now().strftime("%H:%M:%S")
-        print(f"Service running: {time_now}")
+        print(f"{time_now}")
 
 
 if __name__ == "__main__":
