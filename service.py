@@ -70,7 +70,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--push-notification", type=int, default=1)
     parser.add_argument("-m", "--mail-notification", type=int, default=0)
-    # parser.add_argument('-l','--list', action='append', type=str, help='list of items ids (separated by a space)', default=[])
     parser.add_argument(
         "-l",
         "--list",
