@@ -7,7 +7,6 @@ from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS
 from utils import (
     send_push_notification,
     get_client,
-    send_mail_notification,
     time_since,
     load_json,
 )
@@ -45,8 +44,6 @@ class Service:
     def send_notification(self, item):
         if self.push_notification:
             send_push_notification(message=item["display_name"])
-        if self.mail_notification:
-            send_mail_notification(subject=item["display_name"])
 
     def print_items_that_service_tracks(self):
         favorite_items = load_json("favorite_items.json")
@@ -83,8 +80,5 @@ if __name__ == "__main__":
     push_notification = args.push_notification
     mail_notification = args.mail_notification
     items_to_track = args.list
-    n = len(items_to_track)
-    SLEEP_LOWER /= n
-    SLEEP_UPPER /= n
     service = Service(items_to_track, push_notification, mail_notification)
     service.run()
