@@ -11,6 +11,7 @@ TWO_HOURS = 7200
 EMAIL = os.getenv("email")
 
 PUSHBULLET_ACCESS_TOKEN = os.getenv("pushbullet_access_token")
+PUSHBULLET_PHONE_IDEN = os.getenv("pushbullet_phone_iden")
 PUSH_TITLE = "TGTG"
 
 ACCESS_TOKEN = os.getenv("access_token")

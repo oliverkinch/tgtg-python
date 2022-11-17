@@ -10,6 +10,7 @@ from constants import (
     REFRESH_TOKEN,
     USER_ID,
     PUSHBULLET_ACCESS_TOKEN,
+    PUSHBULLET_PHONE_IDEN,
     PUSH_TITLE,
 )
 
@@ -47,7 +48,12 @@ def send_push_notification(message):
         "Access-Token": f"{PUSHBULLET_ACCESS_TOKEN}",
         "Content-Type": "application/json",
     }
-    data = {"type": "note", "title": PUSH_TITLE, "body": message}
+    data = {
+        "type": "note",
+        "title": PUSH_TITLE,
+        "body": message,
+        "device_iden": PUSHBULLET_PHONE_IDEN,
+    }
     response = requests.post(
         "https://api.pushbullet.com/v2/pushes", headers=headers, data=json.dumps(data)
     )
