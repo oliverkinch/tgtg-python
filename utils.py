@@ -3,7 +3,15 @@ import os
 from pushbullet import PushBullet
 import time
 import json
-from constants import ACCESS_TOKEN, REFRESH_TOKEN, USER_ID, PUSHBULLET_APIKEY, PUSH_NOTE
+import requests
+
+from constants import (
+    ACCESS_TOKEN,
+    REFRESH_TOKEN,
+    USER_ID,
+    PUSHBULLET_ACCESS_TOKEN,
+    PUSH_TITLE,
+)
 
 
 def save_json(data, path):
@@ -34,6 +42,13 @@ def send_push_notification(message):
     Send push notification.
     https://github.com/rbrcsk/pushbullet.py
     """
-    apikey = os.getenv(PUSHBULLET_APIKEY)
-    pb = PushBullet(apikey)
-    pb.push_note(PUSH_NOTE, message)
+
+    headers = {
+        "Access-Token": f"{PUSHBULLET_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    data = {"type": "note", "title": PUSH_TITLE, "body": message}
+    response = requests.post(
+        "https://api.pushbullet.com/v2/pushes", headers=headers, data=json.dumps(data)
+    )
+    print(response)

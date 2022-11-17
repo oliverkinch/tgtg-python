@@ -10,8 +10,8 @@ TWO_HOURS = 7200
 
 EMAIL = os.getenv("email")
 
-PUSHBULLET_APIKEY = os.getenv("APIKEY-pushbullet")
-PUSH_NOTE = "TGTG"
+PUSHBULLET_ACCESS_TOKEN = os.getenv("pushbullet_access_token")
+PUSH_TITLE = "TGTG"
 
 ACCESS_TOKEN = os.getenv("access_token")
 REFRESH_TOKEN = os.getenv("refresh_token")
