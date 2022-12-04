@@ -52,7 +52,6 @@ def send_push_notification(message):
         "body": message,
         "device_iden": PUSHBULLET_PHONE_IDEN,
     }
-    response = requests.post(
+    requests.post(
         "https://api.pushbullet.com/v2/pushes", headers=headers, data=json.dumps(data)
     )
-    print(response)
