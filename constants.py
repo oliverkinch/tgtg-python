@@ -7,6 +7,7 @@ load_dotenv()
 SLEEP_LOWER = 120
 SLEEP_UPPER = 240
 TWO_HOURS = 7200
+TWENTY_FIVE_MINUTES = 25 * 60
 
 EMAIL = os.getenv("email")
 

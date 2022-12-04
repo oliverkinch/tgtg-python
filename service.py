@@ -2,7 +2,11 @@ import time
 import random
 import argparse
 from datetime import datetime
-from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS
+from wakepy import set_keepawake
+
+set_keepawake(keep_screen_awake=False)
+
+from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS, TWENTY_FIVE_MINUTES
 
 from utils import (
     send_push_notification,

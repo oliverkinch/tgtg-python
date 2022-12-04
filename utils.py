@@ -1,6 +1,4 @@
 from tgtg import TgtgClient
-import os
-from pushbullet import PushBullet
 import time
 import json
 import requests
