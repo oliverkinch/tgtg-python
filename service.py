@@ -6,7 +6,7 @@ from wakepy import set_keepawake
 
 set_keepawake(keep_screen_awake=False)
 
-from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS, TWENTY_FIVE_MINUTES
+from constants import SLEEP_LOWER, SLEEP_UPPER, TWO_HOURS
 
 from utils import (
     send_push_notification,
@@ -17,9 +17,16 @@ from utils import (
 
 
 class Service:
-    def __init__(self, items_to_track, push_notification=True, mail_notification=False):
+    def __init__(
+        self,
+        items_to_track,
+        push_notification=True,
+        mail_notification=False,
+        exit_after_notification=True,
+    ):
         self.push_notification = push_notification
         self.mail_notification = mail_notification
+        self.exit_after_notification = exit_after_notification
 
         self.client = get_client()
         self.start_time = time.time()
@@ -40,6 +47,8 @@ class Service:
             if item["items_available"]:
                 print(f"\n\t{item['display_name']} is available\n")
                 self.send_notification(item)
+                if self.exit_after_notification:
+                    exit()
             self._sleep()
 
     def restart_client(self):
@@ -71,6 +80,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--push-notification", type=int, default=1)
     parser.add_argument("-m", "--mail-notification", type=int, default=0)
+    parser.add_argument("-e", "--exit-after-notification", type=int, default=1)
     parser.add_argument(
         "-l",
         "--list",
@@ -83,6 +93,9 @@ if __name__ == "__main__":
 
     push_notification = args.push_notification
     mail_notification = args.mail_notification
+    exit_after_notification = args.exit_after_notification
     items_to_track = args.list
-    service = Service(items_to_track, push_notification, mail_notification)
+    service = Service(
+        items_to_track, push_notification, mail_notification, exit_after_notification
+    )
     service.run()
