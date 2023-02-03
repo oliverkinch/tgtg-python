@@ -18,3 +18,4 @@ PUSH_TITLE = "TGTG"
 ACCESS_TOKEN = os.getenv("access_token")
 REFRESH_TOKEN = os.getenv("refresh_token")
 USER_ID = os.getenv("user_id")
+COOKIE = os.getenv("cookie")

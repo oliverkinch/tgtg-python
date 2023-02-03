@@ -5,6 +5,7 @@ import requests
 
 from constants import (
     ACCESS_TOKEN,
+    COOKIE,
     REFRESH_TOKEN,
     USER_ID,
     PUSHBULLET_ACCESS_TOKEN,
@@ -25,7 +26,10 @@ def load_json(path):
 
 def get_client():
     return TgtgClient(
-        access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN, user_id=USER_ID
+        access_token=ACCESS_TOKEN,
+        refresh_token=REFRESH_TOKEN,
+        user_id=USER_ID,
+        cookie=COOKIE,
     )
 
 
