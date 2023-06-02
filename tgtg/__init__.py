@@ -12,13 +12,17 @@ from tgtg.google_play_scraper import get_last_apk_version
 from .exceptions import TgtgAPIError, TgtgLoginError, TgtgPollingError
 
 BASE_URL = "https://apptoogoodtogo.com/api/"
-API_ITEM_ENDPOINT = "item/v7/"
+API_ITEM_ENDPOINT = "item/v8/"
 AUTH_BY_EMAIL_ENDPOINT = "auth/v3/authByEmail"
 AUTH_POLLING_ENDPOINT = "auth/v3/authByRequestPollingId"
 SIGNUP_BY_EMAIL_ENDPOINT = "auth/v3/signUpByEmail"
 REFRESH_ENDPOINT = "auth/v3/token/refresh"
 ACTIVE_ORDER_ENDPOINT = "order/v6/active"
 INACTIVE_ORDER_ENDPOINT = "order/v6/inactive"
+CREATE_ORDER_ENDPOINT = "order/v7/create/"
+ABORT_ORDER_ENDPOINT = "order/v7/{}/abort"
+ORDER_STATUS_ENDPOINT = "order/v7/{}/status"
+API_BUCKET_ENDPOINT = "discover/v1/bucket"
 DEFAULT_APK_VERSION = "22.5.5"
 USER_AGENTS = [
     "TGTG/{} Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)",
@@ -47,7 +51,6 @@ class TgtgClient:
         device_type="ANDROID",
         cookie=None,
     ):
-
         self.base_url = url
 
         self.email = email
@@ -283,6 +286,36 @@ class TgtgClient:
         else:
             raise TgtgAPIError(response.status_code, response.content)
 
+    def get_favorites(
+        self,
+        latitude=0.0,
+        longitude=0.0,
+        radius=21,
+        page_size=50,
+        page=0,
+    ):
+        self.login()
+
+        # fields are sorted like in the app
+        data = {
+            "origin": {"latitude": latitude, "longitude": longitude},
+            "radius": radius,
+            "user_id": self.user_id,
+            "paging": {"page": page, "size": page_size},
+            "bucket": {"filler_type": "Favorites"},
+        }
+        response = self.session.post(
+            self._get_url(API_BUCKET_ENDPOINT),
+            headers=self._headers,
+            json=data,
+            proxies=self.proxies,
+            timeout=self.timeout,
+        )
+        if response.status_code == HTTPStatus.OK:
+            return response.json()["mobile_bucket"]["items"]
+        else:
+            raise TgtgAPIError(response.status_code, response.content)
+
     def set_favorite(self, item_id, is_favorite):
         self.login()
         response = self.session.post(
@@ -294,6 +327,55 @@ class TgtgClient:
         )
         if response.status_code != HTTPStatus.OK:
             raise TgtgAPIError(response.status_code, response.content)
+
+    def create_order(self, item_id, item_count):
+        self.login()
+
+        response = self.session.post(
+            urljoin(self._get_url(CREATE_ORDER_ENDPOINT), str(item_id)),
+            headers=self._headers,
+            json={"item_count": item_count},
+            proxies=self.proxies,
+            timeout=self.timeout,
+        )
+        if response.status_code != HTTPStatus.OK:
+            raise TgtgAPIError(response.status_code, response.content)
+        elif response.json()["state"] != "SUCCESS":
+            raise TgtgAPIError(response.json()["state"], response.content)
+        else:
+            return response.json()["order"]
+
+    def get_order_status(self, order_id):
+        self.login()
+
+        response = self.session.post(
+            self._get_url(ORDER_STATUS_ENDPOINT.format(order_id)),
+            headers=self._headers,
+            proxies=self.proxies,
+            timeout=self.timeout,
+        )
+        if response.status_code == HTTPStatus.OK:
+            return response.json()
+        else:
+            raise TgtgAPIError(response.status_code, response.content)
+
+    def abort_order(self, order_id):
+        """Use this when your order is not yet paid"""
+        self.login()
+
+        response = self.session.post(
+            self._get_url(ABORT_ORDER_ENDPOINT.format(order_id)),
+            headers=self._headers,
+            json={"cancel_reason_id": 1},
+            proxies=self.proxies,
+            timeout=self.timeout,
+        )
+        if response.status_code != HTTPStatus.OK:
+            raise TgtgAPIError(response.status_code, response.content)
+        elif response.json()["state"] != "SUCCESS":
+            raise TgtgAPIError(response.json()["state"], response.content)
+        else:
+            return
 
     def signup_by_email(
         self,
