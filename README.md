@@ -36,12 +36,8 @@ python service.py
 For default IDs
 
 Examples
-python service.py -l 3321       (Super brugsen- frugt og grønt) ~ 22:00
-python service.py -l 59227 52712   (Lidl kød og kølevarer + frugt og grønt) ~ 22:15
-python service.py -l 212303     (Aldi - frugt og grønt) ~ 17
-python service.py -l 728191 (olioli ny østergade)
-Menu dagligvarer: 653822
-Gorillas: 477157
+python service.py -l 59225 (Lidl kød og kølevarer) (udsolgt 22:20)
+python service.py -l 59225 (Lidl Frugt og grønt) (udsolgt 14:15)
 ## Use it
 
 ### Retrieve tokens
